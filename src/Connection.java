@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -5,26 +6,40 @@ import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Connection {
-    static String[] patterns = {"up\\\"\\:\\\"\\+", "right\\\"\\:\\\"\\+", "down\\\"\\:\\\"\\+", "left\\\"\\:\\\"\\+"};
+    private static String[] patterns = {"up\\\"\\:\\\"\\+", "right\\\"\\:\\\"\\+", "down\\\"\\:\\\"\\+", "left\\\"\\:\\\"\\+"};
 
     public static void move (int numberOfLabyrinth, String UID, String direction){
         if (direction != "right" && direction != "left" && direction != "up" && direction != "down"){
             System.err.print("Incorrect way");
             return;
         }
-        //TODO
         StringBuilder addressCreator = new StringBuilder();
         String address = addressCreator.append("http://tesla.iem.pw.edu.pl:4444/").append(UID).append('/').append(numberOfLabyrinth).append("/move/").append(direction).toString();
         HttpClient con = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(address)).build();
     }
 
-    public static void uploadMap (char[][] map){
-        //TODO
+    public static void uploadMap (int numberOfLabyrinth, String UID,String file) throws FileNotFoundException {
+        Path path = Paths.get(file);
+        StringBuilder addressCreator = new StringBuilder();
+        String address = addressCreator.append("http://tesla.iem.pw.edu.pl:4444/").append(UID).append('/').append(numberOfLabyrinth).append("/upload").toString();
+
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(address)).POST(HttpRequest.BodyPublishers.ofFile(path)).build();
+        HttpResponse<String> response = null;
+        try{
+            response = client.send(request,HttpResponse.BodyHandlers.ofString());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static char[] getPossibilities(int numberOfLabyrinth, String UID) {

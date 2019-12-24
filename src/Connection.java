@@ -14,10 +14,10 @@ import java.util.regex.Pattern;
 public class Connection {
     private static String[] patterns = {"up\\\"\\:\\\"\\+", "right\\\"\\:\\\"\\+", "down\\\"\\:\\\"\\+", "left\\\"\\:\\\"\\+"};
 
-    public static void move (int numberOfLabyrinth, String UID, String direction){
+    public static boolean move (int numberOfLabyrinth, String UID, String direction){
         if (direction != "right" && direction != "left" && direction != "up" && direction != "down"){
             System.err.print("Incorrect way");
-            return;
+            return false;
         }
         StringBuilder addressCreator = new StringBuilder();
         String address = addressCreator.append("http://tesla.iem.pw.edu.pl:4444/").append(UID).append('/').append(numberOfLabyrinth).append("/move/").append(direction).toString();
@@ -26,11 +26,18 @@ public class Connection {
         HttpResponse<String> response = null;
         try {
             response = con.send(request, HttpResponse.BodyHandlers.ofString());
+            Pattern compilePattern = Pattern.compile("You can not move in this direction");
+            Matcher matcher = compilePattern.matcher(response.body());
+            if (matcher.find()){
+                System.err.print("Ruch w ścianę.");
+                return false;
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return true;
     }
 
     public static void uploadMap (int numberOfLabyrinth, String UID,String file) throws FileNotFoundException {

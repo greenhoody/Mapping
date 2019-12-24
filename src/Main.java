@@ -9,7 +9,7 @@ public class Main {
         System.out.printf("%d %d \n", size[0], size[1]);
         int[] position = Connection.getStartPosition(1, "f95a1461");
         System.out.printf("%d %d \n", position[0], position[1]);
-        Connection.move(1, "f95a1461", "left");
+        Connection.move(1, "f95a1461", "right");
         tmp = Connection.getPossibilities(1, "f95a1461");
         System.out.println(tmp);
 

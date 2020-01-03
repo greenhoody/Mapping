@@ -17,5 +17,11 @@ public class Node {
         }
         throw new IllegalArgumentException("Nie ma takiego sąsiada");
     }
+
+    public Node(int index){
+        visited = false;
+        visitedFrom = null;
+        this.index = index;
+    }
 }
 

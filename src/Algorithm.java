@@ -1,6 +1,10 @@
 public class Algorithm {
 
     public Field[][] maze;
+    int xCurrent;
+    int yCurrent;
+    int xChange;
+    int yChange;
 
     public void createMaze(int numberOfLabyrinth, String UID) {
         /*Generujemy strukturę labiryntu na której będziemy wykonywać mapowanie.
@@ -43,19 +47,80 @@ public class Algorithm {
 
         boolean mazeMapped = false;
         while (mazeMapped != true){
+            maze[xCurrent][yCurrent].visited = true;
+            String direction = checkForVisited(xCurrent,yCurrent, numberOfLabyrinth, UID);
+            if (direction == "stop"){
 
-            if (checkForVisited(xCurrent,yCurrent) == true){
 
+            }
+            else{
+                xCurrent += xChange;
+                yCurrent += yChange;
+                Connection.move(numberOfLabyrinth, UID, direction);
             }
         }
     }
-    public boolean checkForVisited (int xCurrent, int yCurrent){
-        /*metoda zwraca true, jeśli wszystkie węzły, do których można dojść z danego węzła zostały już odwiedzone
-          metoda zwraca false, jeśli z danego węzła można przejść do innego, nieodwiedzonego jeszcze węzła
+    public String checkForVisited (int xCurrent, int yCurrent, int numberOfLabyrinth, String UID){
+        /*Metoda mapuje wszystkie nieodwiedzone węzły wokół aktualnego węzła po czym zwraca kierunek
+          najbliższego nieodwiedzonego węzła patrząc od góry ("UP" oznacza górę, "RIGHT" wschód, "DOWN" południe, "LEFT" zachód)
+          lub "STOP" jeśli takiego węzła nie ma
         */
-        boolean ifVisited;
-        ifVisited=true;
-        return ifVisited;
+
+        char[] possibilities = Connection.getPossibilities(numberOfLabyrinth, UID);
+        String answer = "STOP";
+        if (possibilities[3] == '0'){
+            maze[xCurrent - 1][yCurrent].type = '0';
+            maze[xCurrent - 2][yCurrent].type = '0';
+            if (maze[xCurrent - 2][yCurrent].visited == false){
+                xChange = -2;
+                yChange = 0;
+                answer = "left";
+            }
+        }
+        else{
+            maze[xCurrent - 1][yCurrent].type = '+';
+        }
+
+        if (possibilities[2] == '0'){
+            maze[xCurrent][yCurrent + 1].type = '0';
+            maze[xCurrent][yCurrent + 2].type = '0';
+            if (maze[xCurrent][yCurrent + 2].visited == false){
+                xChange = 0;
+                yChange = 2;
+                answer = "down";
+            }
+        }
+        else{
+            maze[xCurrent][yCurrent + 1].type = '+';
+        }
+
+        if (possibilities[1] == '0'){
+            maze[xCurrent + 1][yCurrent].type = '0';
+            maze[xCurrent + 2][yCurrent].type = '0';
+            if (maze[xCurrent + 2][yCurrent].visited == false){
+                xChange = 2;
+                yChange = 0;
+                answer = "right";
+            }
+        }
+        else{
+            maze[xCurrent + 1][yCurrent].type = '+';
+        }
+
+        if (possibilities[0] == '0'){
+            maze[xCurrent][yCurrent - 1].type = '0';
+            maze[xCurrent][yCurrent - 2].type = '0';
+            if (maze[xCurrent][yCurrent - 2].visited == false){
+                xChange = 0;
+                yChange = -2;
+                answer = "up";
+            }
+        }
+        else{
+            maze[xCurrent][yCurrent - 1].type = '+';
+        }
+
+        return answer;
     }
 
 }

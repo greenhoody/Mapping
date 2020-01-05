@@ -8,20 +8,12 @@ public class Node {
     public int index;
     public int x;
     public int y;
-    public ArrayList<Node> neighbours;
-
-    public int findNeighbour(Node n){
-        for (int i = 0; i < neighbours.size(); i++){
-            if (neighbours.get(i) == n)
-                return i;
-        }
-        throw new IllegalArgumentException("Nie ma takiego sąsiada");
-    }
-
-    public Node(int index){
-        visited = false;
-        visitedFrom = null;
-        this.index = index;
+  
+    public Node(boolean visited, Node visitedFrom, int x, int y){
+        this.visited = visited;
+        this.visitedFrom = visitedFrom;
+        this.x = x;
+        this.y = y;
     }
 }
 

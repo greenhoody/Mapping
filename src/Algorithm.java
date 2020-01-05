@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Algorithm {
 
     public Field[][] maze;
@@ -50,8 +52,15 @@ public class Algorithm {
             maze[xCurrent][yCurrent].visited = true;
             String direction = checkForVisited(xCurrent,yCurrent, numberOfLabyrinth, UID);
             if (direction == "stop"){
-
-
+                ArrayList<String> newDirection = BFS();
+                if (newDirection.get(0) == "MAPPED"){
+                    mazeMapped = true;
+                }
+                else{
+                    for (int i = 0; i < newDirection.size(); i++){
+                        Connection.move(numberOfLabyrinth, UID, newDirection.get(i));
+                    }
+                }
             }
             else{
                 xCurrent += xChange;
@@ -60,14 +69,14 @@ public class Algorithm {
             }
         }
     }
-    public String checkForVisited (int xCurrent, int yCurrent, int numberOfLabyrinth, String UID){
+    public String checkForVisited(int xCurrent, int yCurrent, int numberOfLabyrinth, String UID){
         /*Metoda mapuje wszystkie nieodwiedzone węzły wokół aktualnego węzła po czym zwraca kierunek
           najbliższego nieodwiedzonego węzła patrząc od góry ("UP" oznacza górę, "RIGHT" wschód, "DOWN" południe, "LEFT" zachód)
           lub "STOP" jeśli takiego węzła nie ma
         */
 
         char[] possibilities = Connection.getPossibilities(numberOfLabyrinth, UID);
-        String answer = "STOP";
+        String answer = "stop";
         if (possibilities[3] == '0'){
             maze[xCurrent - 1][yCurrent].type = '0';
             maze[xCurrent - 2][yCurrent].type = '0';
@@ -123,4 +132,62 @@ public class Algorithm {
         return answer;
     }
 
+    ArrayList<String> BFS(){
+        ArrayList<String> answer = new ArrayList<>();
+        ArrayList<Node> queue = new ArrayList<>();
+        queue.add(new Node(true,null,xCurrent,yCurrent));
+        while (queue.size() > 0){
+            if (queue.get(0).visited == false){
+                Node currentNode = queue.get(0);
+                Node prevNode = currentNode.visitedFrom;
+                while (prevNode != null){
+                    answer.add(calculateDirection(prevNode.x, prevNode.y, currentNode.x, currentNode.y));
+                    currentNode = prevNode;
+                    prevNode = currentNode.visitedFrom;
+                }
+                return answer;
+            }
+            else{
+                Node currentNode = queue.get(0);
+                int x = currentNode.x;
+                int y = currentNode.y;
+                if (maze[x][y - 1].type == '0'){
+                    queue.add(new Node(maze[x][y - 2].visited,currentNode,x,y - 2));
+                }
+                if (maze[x][y + 1].type == '0'){
+                    queue.add(new Node(maze[x][y + 2].visited,currentNode,x,y + 2));
+                }
+                if (maze[x - 1][y].type == '0'){
+                    queue.add(new Node(maze[x - 2][y].visited,currentNode,x - 2,y));
+                }
+                if (maze[x + 1][y].type == '0'){
+                    queue.add(new Node(maze[x + 2][y].visited,currentNode,x + 2,y));
+                }
+                queue.remove(0);
+            }
+        }
+        answer.add("MAPPED");
+        return answer;
+    }
+
+    String calculateDirection(int xFirst, int yFirst, int xSecond, int ySecond){
+        if (xFirst == xSecond){
+            if (yFirst > ySecond){
+                return "up";
+            }
+            else if (yFirst < ySecond){
+                return "down";
+            }
+            throw new IllegalArgumentException("Próbujesz przejść do tego samego wierzchołka");
+        }
+        else{
+            if (xFirst > xSecond){
+                return "left";
+            }
+            else if (xFirst < xSecond){
+                return "right";
+            }
+            throw new IllegalArgumentException("Próbujesz przejść do tego samego wierzchołka");
+        }
+    }
 }

@@ -68,6 +68,16 @@ public class Algorithm {
                 Connection.move(numberOfLabyrinth, UID, direction);
             }
         }
+        int[] size = Connection.getSize(numberOfLabyrinth, UID);
+        int height = size[0];
+        int width = size[1];
+        for (int i = 0; i < 2*height+1; i++){
+            for (int j = 0; j < 2*width+1; j++){
+                if (maze[i][j].visited == false){
+                    maze[i][j].type = '+';
+                }
+            }
+        }
     }
     public String checkForVisited(int xCurrent, int yCurrent, int numberOfLabyrinth, String UID){
         /*Metoda mapuje wszystkie nieodwiedzone węzły wokół aktualnego węzła po czym zwraca kierunek

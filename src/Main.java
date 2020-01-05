@@ -11,8 +11,11 @@ public class Main {
         System.out.printf("%d %d \n", position[0], position[1]);
         Connection.move(1, "f95a1461", "left");
         tmp = Connection.getPossibilities(1, "f95a1461");*/
-
         Algorithm rozwiazywator = new Algorithm();
+        char[]tmp = Connection.getPossibilities(1, "f95a1461");
+        System.out.println(tmp);
+        int[] position = Connection.getStartPosition(1, "f95a1461");
+        System.out.printf("%d %d \n", position[0], position[1]);
         rozwiazywator.createMaze(1, "f95a1461");
         rozwiazywator.mapMaze(1, "f95a1461");
         for (int y = 0; y < rozwiazywator.maze.length; y++ ){

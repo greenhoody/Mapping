@@ -16,7 +16,7 @@ public class Algorithm {
         int[] size = Connection.getSize(numberOfLabyrinth, UID);
         int height = size[0];
         int width = size[1];
-        maze = new Field[height][width];
+        maze = new Field[2*height+1][2*width+1];
         for (int i = 0; i < 2*height+1; i++){
             for (int j = 0; j < 2*width+1; j++){
                 maze[i][j] = new Field();

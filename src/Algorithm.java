@@ -16,15 +16,12 @@ public class Algorithm {
           Macierz 11x11 opisuje labirynt 5x5
         */
         int[] size = Connection.getSize(numberOfLabyrinth, UID);
-<<<<<<< HEAD
         int height = size[0];
         int width = size[1];
         maze = new Field[2*height+1][2*width+1];
-=======
         height = size[0];
         width = size[1];
-        maze = new Field[height][width];
->>>>>>> 6c6765e071b96d1af096364389f0bd37ec900f80
+        maze = new Field[ 2*height+1][2*width+1];
         for (int i = 0; i < 2*height+1; i++){
             for (int j = 0; j < 2*width+1; j++){
                 maze[i][j] = new Field();

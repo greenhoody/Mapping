@@ -16,12 +16,9 @@ public class Algorithm {
           Macierz 11x11 opisuje labirynt 5x5
         */
         int[] size = Connection.getSize(numberOfLabyrinth, UID);
-        int height = size[0];
-        int width = size[1];
-        maze = new Field[2*height+1][2*width+1];
         height = size[0];
         width = size[1];
-        maze = new Field[ 2*height+1][2*width+1];
+        maze = new Field[2*height+1][2*width+1];
         for (int i = 0; i < 2*height+1; i++){
             for (int j = 0; j < 2*width+1; j++){
                 maze[i][j] = new Field();
@@ -47,8 +44,8 @@ public class Algorithm {
         int[] position = Connection.getStartPosition(numberOfLabyrinth , UID);
         int xStart = position[0]*2-1;
         int yStart = position[1]*2-1;
-        int xCurrent = xStart;
-        int yCurrent = yStart;
+        xCurrent = xStart;
+        yCurrent = yStart;
         maze[xStart][yStart].type = '0';
         maze[xStart][yStart].visited = true;
 

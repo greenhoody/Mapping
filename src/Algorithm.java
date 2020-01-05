@@ -7,6 +7,8 @@ public class Algorithm {
     int yCurrent;
     int xChange;
     int yChange;
+    int height;
+    int width;
 
     public void createMaze(int numberOfLabyrinth, String UID) {
         /*Generujemy strukturę labiryntu na której będziemy wykonywać mapowanie.
@@ -14,8 +16,8 @@ public class Algorithm {
           Macierz 11x11 opisuje labirynt 5x5
         */
         int[] size = Connection.getSize(numberOfLabyrinth, UID);
-        int height = size[0];
-        int width = size[1];
+        height = size[0];
+        width = size[1];
         maze = new Field[height][width];
         for (int i = 0; i < 2*height+1; i++){
             for (int j = 0; j < 2*width+1; j++){
@@ -68,9 +70,7 @@ public class Algorithm {
                 Connection.move(numberOfLabyrinth, UID, direction);
             }
         }
-        int[] size = Connection.getSize(numberOfLabyrinth, UID);
-        int height = size[0];
-        int width = size[1];
+        
         for (int i = 0; i < 2*height+1; i++){
             for (int j = 0; j < 2*width+1; j++){
                 if (maze[i][j].visited == false){

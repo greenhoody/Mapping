@@ -65,7 +65,7 @@ public class Connection {
             String address = addressCreator.append("http://tesla.iem.pw.edu.pl:4444/").append(UID).append('/').append(numberOfLabyrinth).append("/possibilities").toString();
             //Making response from server into return values
             String body = getBodyResponse(address);
-            System.out.printf(body, "\n");
+            //System.out.printf(body, "\n");
             for (int i = 0; i < 4; i++) {
                 Pattern compilePattern = Pattern.compile(patterns[i]);
                 Matcher matcher = compilePattern.matcher(body);
@@ -128,7 +128,14 @@ public class Connection {
         StringBuilder addressCreator = new StringBuilder();
         String address = addressCreator.append("http://tesla.iem.pw.edu.pl:4444/").append(UID).append('/').append(numberOfLabyrinth).append("/reset").toString();
         //Making response from server into return values
-        String body = getBodyResponse(address);
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(address.toString())).POST(HttpRequest.BodyPublishers.ofString("")).build();
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        }
+        catch (InterruptedException | IOException e) {
+            e.printStackTrace(); }
     }
 
     public static int numberOfMoves(int numberOfLabyrinth, String UID) throws IOException, InterruptedException {

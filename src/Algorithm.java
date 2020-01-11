@@ -24,6 +24,11 @@ public class Algorithm {
                 maze[i][j] = new Field();
             }
         }
+        for (int i = 2; i < 2*height+1; i = i + 2){
+            for (int j = 2; j < 2*width+1; j = j + 2){
+                maze[i][j].type = '+';
+            }
+        }
         for (int i = 0; i < 2*width+1; i++){
             maze[0][i].type = '+';
         }
@@ -77,6 +82,10 @@ public class Algorithm {
             for (int j = 1; j < 2*width+1; j = j + 2){
                 if (maze[i][j].visited == false){
                     maze[i][j].type = '+';
+                    maze[i-1][j].type = '+';
+                    maze[i+1][j].type = '+';
+                    maze[i][j-1].type = '+';
+                    maze[i][j+1].type = '+';
                 }
             }
         }

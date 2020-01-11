@@ -2,7 +2,7 @@ import java.io.IOException;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        Connection.reset(1, "f95a1461");
+        Connection.reset(4, "f95a1461");
         /*char[] tmp = Connection.getPossibilities(1, "f95a1461");
         System.out.println(tmp);
         int[] size = Connection.getSize(1, "f95a1461");
@@ -12,15 +12,15 @@ public class Main {
         Connection.move(1, "f95a1461", "left");
         tmp = Connection.getPossibilities(1, "f95a1461");*/
         Algorithm rozwiazywator = new Algorithm();
-        char[]tmp = Connection.getPossibilities(1, "f95a1461");
+        char[]tmp = Connection.getPossibilities(4, "f95a1461");
         System.out.println(tmp);
-        int[] position = Connection.getStartPosition(1, "f95a1461");
+        int[] position = Connection.getStartPosition(4, "f95a1461");
         System.out.printf("%d %d \n", position[0], position[1]);
-        rozwiazywator.createMaze(1, "f95a1461");
-        rozwiazywator.mapMaze(1, "f95a1461");
-        for (int y = 0; y < rozwiazywator.maze.length; y++ ){
-            for (int x = 0; x < rozwiazywator.maze[0].length; x++){
-                System.out.print(rozwiazywator.maze[y][x]);
+        rozwiazywator.createMaze(4, "f95a1461");
+        rozwiazywator.mapMaze(4, "f95a1461");
+        for (int y = 0; y < rozwiazywator.maze[0].length; y++ ){
+            for (int x = 0; x < rozwiazywator.maze.length; x++){
+                System.out.print(rozwiazywator.maze[x][y].type);
             }
             System.out.println();
         }

@@ -54,13 +54,15 @@ public class Algorithm {
             maze[xCurrent][yCurrent].visited = true;
             String direction = checkForVisited(xCurrent,yCurrent, numberOfLabyrinth, UID);
             if (direction == "stop"){
-                ArrayList<String> newDirection = BFS();
-                if (newDirection.get(0) == "MAPPED"){
+                ArrayList<Direction> newDirection = BFS();
+                if (newDirection.get(0).direction == "MAPPED"){
                     mazeMapped = true;
                 }
                 else{
-                    for (int i = 0; i < newDirection.size(); i++){
-                        Connection.move(numberOfLabyrinth, UID, newDirection.get(i));
+                    for (int i = newDirection.size() - 1; i >= 0 ; i--){
+                        xCurrent += newDirection.get(i).x;
+                        yCurrent += newDirection.get(i).y;
+                        Connection.move(numberOfLabyrinth, UID, newDirection.get(i).direction);
                     }
                 }
             }
@@ -71,8 +73,8 @@ public class Algorithm {
             }
         }
         
-        for (int i = 0; i < 2*height+1; i++){
-            for (int j = 0; j < 2*width+1; j++){
+        for (int i = 1; i < 2*height+1; i = i + 2){
+            for (int j = 1; j < 2*width+1; j = j + 2){
                 if (maze[i][j].visited == false){
                     maze[i][j].type = '+';
                 }
@@ -90,6 +92,8 @@ public class Algorithm {
         if (possibilities[3] == '0'){
             maze[xCurrent - 1][yCurrent].type = '0';
             maze[xCurrent - 2][yCurrent].type = '0';
+           /* if (checkIfVisit(xCurrent - 2,yCurrent))
+                maze[xCurrent - 2][yCurrent].visited = true;*/
             if (maze[xCurrent - 2][yCurrent].visited == false){
                 xChange = -2;
                 yChange = 0;
@@ -103,6 +107,8 @@ public class Algorithm {
         if (possibilities[2] == '0'){
             maze[xCurrent][yCurrent + 1].type = '0';
             maze[xCurrent][yCurrent + 2].type = '0';
+            if (checkIfVisit(xCurrent,yCurrent + 2))
+                maze[xCurrent][yCurrent + 2].visited = true;
             if (maze[xCurrent][yCurrent + 2].visited == false){
                 xChange = 0;
                 yChange = 2;
@@ -116,6 +122,8 @@ public class Algorithm {
         if (possibilities[1] == '0'){
             maze[xCurrent + 1][yCurrent].type = '0';
             maze[xCurrent + 2][yCurrent].type = '0';
+            if (checkIfVisit(xCurrent + 2,yCurrent))
+                maze[xCurrent + 2][yCurrent].visited = true;
             if (maze[xCurrent + 2][yCurrent].visited == false){
                 xChange = 2;
                 yChange = 0;
@@ -129,6 +137,8 @@ public class Algorithm {
         if (possibilities[0] == '0'){
             maze[xCurrent][yCurrent - 1].type = '0';
             maze[xCurrent][yCurrent - 2].type = '0';
+            if (checkIfVisit(xCurrent,yCurrent - 2))
+                maze[xCurrent][yCurrent - 2].visited = true;
             if (maze[xCurrent][yCurrent - 2].visited == false){
                 xChange = 0;
                 yChange = -2;
@@ -142,10 +152,14 @@ public class Algorithm {
         return answer;
     }
 
-    ArrayList<String> BFS(){
-        ArrayList<String> answer = new ArrayList<>();
+
+
+    public ArrayList<Direction> BFS(){
+        ArrayList<Direction> answer = new ArrayList<>();
         ArrayList<Node> queue = new ArrayList<>();
+        ArrayList<Node> addedNodes = new ArrayList<>();
         queue.add(new Node(true,null,xCurrent,yCurrent));
+        addedNodes.add(new Node(true,null,xCurrent,yCurrent));
         while (queue.size() > 0){
             if (queue.get(0).visited == false){
                 Node currentNode = queue.get(0);
@@ -161,41 +175,82 @@ public class Algorithm {
                 Node currentNode = queue.get(0);
                 int x = currentNode.x;
                 int y = currentNode.y;
-                if (maze[x][y - 1].type == '0'){
+                if (maze[x][y - 1].type == '0' && checkForNode(x,y-2,addedNodes) == false){
                     queue.add(new Node(maze[x][y - 2].visited,currentNode,x,y - 2));
+                    addedNodes.add(new Node(maze[x][y - 2].visited,currentNode,x,y - 2));
                 }
-                if (maze[x][y + 1].type == '0'){
+                if (maze[x][y + 1].type == '0' && checkForNode(x,y+2,addedNodes) == false){
                     queue.add(new Node(maze[x][y + 2].visited,currentNode,x,y + 2));
+                    addedNodes.add(new Node(maze[x][y + 2].visited,currentNode,x,y + 2));
                 }
-                if (maze[x - 1][y].type == '0'){
+                if (maze[x - 1][y].type == '0' && checkForNode(x-2,y,addedNodes) == false){
                     queue.add(new Node(maze[x - 2][y].visited,currentNode,x - 2,y));
+                    addedNodes.add(new Node(maze[x - 2][y].visited,currentNode,x - 2,y));
                 }
-                if (maze[x + 1][y].type == '0'){
+                if (maze[x + 1][y].type == '0' && checkForNode(x+2,y,addedNodes) == false){
                     queue.add(new Node(maze[x + 2][y].visited,currentNode,x + 2,y));
+                    addedNodes.add(new Node(maze[x + 2][y].visited,currentNode,x + 2,y));
                 }
                 queue.remove(0);
             }
         }
-        answer.add("MAPPED");
+        answer.add(new Direction("MAPPED",-1,-1));
         return answer;
     }
-
-    String calculateDirection(int xFirst, int yFirst, int xSecond, int ySecond){
+    public boolean checkIfVisit (int xCurrent, int yCurrent){
+        if ((maze[xCurrent - 1][yCurrent].type == '0' && maze[xCurrent - 2][yCurrent].visited)
+                || maze[xCurrent - 1][yCurrent].type == '+'){
+            if ((maze[xCurrent + 1][yCurrent].type == '0' && maze[xCurrent + 2][yCurrent].visited)
+                    || maze[xCurrent + 1][yCurrent].type == '+'){
+                if ((maze[xCurrent][yCurrent - 1].type == '0' && maze[xCurrent][yCurrent -2].visited)
+                        || maze[xCurrent][yCurrent - 1].type == '+'){
+                    if ((maze[xCurrent][yCurrent + 1].type == '0' && maze[xCurrent][yCurrent + 2].visited)
+                            || maze[xCurrent][yCurrent + 1].type == '+'){
+                        return true;
+                    }
+                }
+            }
+        }
+            return false;
+    }
+    public boolean checkForNode (int x, int y, ArrayList<Node> nodes){
+        for (int i = 0; i < nodes.size(); i++){
+            Node node = nodes.get(i);
+            if (node.x == x && node.y == y){
+                return true;
+            }
+        }
+        return false;
+    }
+    public Direction calculateDirection(int xFirst, int yFirst, int xSecond, int ySecond){
+        Direction direct = new Direction();
         if (xFirst == xSecond){
             if (yFirst > ySecond){
-                return "up";
+                direct.direction = "up";
+                direct.x = 0;
+                direct.y = -2;
+                return direct;
             }
             else if (yFirst < ySecond){
-                return "down";
+                direct.direction = "down";
+                direct.x = 0;
+                direct.y = 2;
+                return direct;
             }
             throw new IllegalArgumentException("Próbujesz przejść do tego samego wierzchołka");
         }
         else{
             if (xFirst > xSecond){
-                return "left";
+                direct.direction = "left";
+                direct.x = -2;
+                direct.y = 0;
+                return direct;
             }
             else if (xFirst < xSecond){
-                return "right";
+                direct.direction = "right";
+                direct.x = 2;
+                direct.y = 0;
+                return direct;
             }
             throw new IllegalArgumentException("Próbujesz przejść do tego samego wierzchołka");
         }

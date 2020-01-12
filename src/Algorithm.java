@@ -101,8 +101,8 @@ public class Algorithm {
         if (possibilities[3] == '0'){
             maze[xCurrent - 1][yCurrent].type = '0';
             maze[xCurrent - 2][yCurrent].type = '0';
-           /* if (checkIfVisit(xCurrent - 2,yCurrent))
-                maze[xCurrent - 2][yCurrent].visited = true;*/
+            if (checkIfVisit(xCurrent - 2,yCurrent))
+                maze[xCurrent - 2][yCurrent].visited = true;
             if (maze[xCurrent - 2][yCurrent].visited == false){
                 xChange = -2;
                 yChange = 0;

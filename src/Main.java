@@ -12,13 +12,5 @@ public class Main {
             String response = Connection.send(labyrinth, UID, Connection.makeFile(rozwiazywator.maze, "./src/solution.txt"));
             System.out.println(response);
         }
-
-
-
-
-        //System.out.println(tmp);
-
-
-
     }
 }

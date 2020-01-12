@@ -91,7 +91,6 @@ public class Connection {
             String address = addressCreator.append("http://tesla.iem.pw.edu.pl:4444/").append(UID).append('/').append(numberOfLabyrinth).append("/possibilities").toString();
             //Making response from server into return values
             String body = getBodyResponse(address);
-            //System.out.printf(body, "\n");
             for (int i = 0; i < 4; i++) {
                 Pattern compilePattern = Pattern.compile(patterns[i]);
                 Matcher matcher = compilePattern.matcher(body);
@@ -118,7 +117,6 @@ public class Connection {
             String address = addressCreator.append("http://tesla.iem.pw.edu.pl:4444/").append(UID).append('/').append(numberOfLabyrinth).append("/size").toString();
             //Making response from server into return values
             String body = getBodyResponse(address);
-            //System.out.printf(body, "\n");
             int tmp = body.indexOf("x");
             size[0] = Integer.parseInt(body.substring(0, (tmp)));
             size[1] = Integer.parseInt(body.substring(tmp + 1));
@@ -138,7 +136,6 @@ public class Connection {
             String address = addressCreator.append("http://tesla.iem.pw.edu.pl:4444/").append(UID).append('/').append(numberOfLabyrinth).append("/startposition").toString();
             //Making response from server into return values
             String body = getBodyResponse(address);
-            //System.out.printf(body, "\n");
             int tmp = body.indexOf(",");
             position[0] = Integer.parseInt(body.substring(0, (tmp)));
             position[1] = Integer.parseInt(body.substring(tmp + 1));
@@ -153,7 +150,7 @@ public class Connection {
     public static void reset(int numberOfLabyrinth, String UID) throws IOException, InterruptedException {
         StringBuilder addressCreator = new StringBuilder();
         String address = addressCreator.append("http://tesla.iem.pw.edu.pl:4444/").append(UID).append('/').append(numberOfLabyrinth).append("/reset").toString();
-        //Making response from server into return values
+        //Making response from server into return values. Method getBodyResponse couldn't been used to reset position.
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(address.toString())).POST(HttpRequest.BodyPublishers.ofString("")).build();
         HttpResponse<String> response = null;

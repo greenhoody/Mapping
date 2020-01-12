@@ -1,5 +1,4 @@
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -13,6 +12,33 @@ import java.util.regex.Pattern;
 
 public class Connection {
     private static String[] patterns = {"up\\\"\\:\\\"\\+", "right\\\"\\:\\\"\\+", "down\\\"\\:\\\"\\+", "left\\\"\\:\\\"\\+"};
+
+    public static String makeFile (Field[][] solution, String path) throws IOException {
+        File answer = new File(path);
+        BufferedWriter bWriter = new BufferedWriter(new FileWriter(answer));
+        for (int i = 0; i < solution[0].length; i++) {
+            StringBuilder cLine = new StringBuilder();
+            for(int a = 0 ; a < solution.length; a++){
+                cLine.append(solution[a][i].type);
+            }
+            bWriter.append(cLine.toString()).append(System.lineSeparator());
+        }
+        bWriter.close();
+        return answer.getPath();
+    }
+
+    public static String send (int numberOfLabyrinth, String UID, String path) throws FileNotFoundException {
+        StringBuilder address = new StringBuilder();
+        address.append("http://tesla.iem.pw.edu.pl:4444/").append(UID).append("/").append(numberOfLabyrinth).append("/upload");
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(address.toString())).POST(HttpRequest.BodyPublishers.ofFile(Paths.get(path))).build();
+        HttpResponse<String> response = null;
+        try {
+            response = client.send(request,HttpResponse.BodyHandlers.ofString());
+        } catch (InterruptedException | IOException e)
+        { e.printStackTrace(); }
+        return  response.body();
+    }
 
     public static boolean move (int numberOfLabyrinth, String UID, String direction){
         if (direction != "right" && direction != "left" && direction != "up" && direction != "down"){
